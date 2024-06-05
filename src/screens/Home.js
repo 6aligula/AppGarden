@@ -5,8 +5,9 @@ import HumedadChart from '../components/HumedadChart';
 import TemperaturaChart from '../components/TemperaturaChart';
 
 const Home = () => {
-  const { data, error } = useFetchData();
+  const { data } = useFetchData();
   const navigate = useNavigate();
+  //console.log('Data in Home component:', data);
 
   return (
     <div className="App">   

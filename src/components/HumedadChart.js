@@ -32,6 +32,7 @@ const HumedadChart = ({ data }) => {
       },
     },
   };
+  //console.log('Data in HumedadChart:', data);
 
   return <Line data={chartData} options={options} />;
 };

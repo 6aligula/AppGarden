@@ -5,6 +5,7 @@ const useFetchData = () => {
   const [error, setError] = useState(null);
 
   const fetchData = () => {
+    console.log('Fetching data...');
     fetch('/temperatura')
       .then(response => {
         if (!response.ok) {
@@ -13,6 +14,7 @@ const useFetchData = () => {
         return response.json();
       })
       .then(newData => {
+        console.log('New data from API:', newData);
         const storedData = JSON.parse(localStorage.getItem('data')) || {
           humedad: [],
           mediana: [],
@@ -27,8 +29,25 @@ const useFetchData = () => {
           ultimas_temperaturas: [...storedData.ultimas_temperaturas, ...newData.ultimas_temperaturas],
         };
 
-        localStorage.setItem('data', JSON.stringify(updatedData));
-        setData(updatedData);
+        // Sincronizar longitudes
+        const minLength = Math.min(
+          updatedData.humedad.length,
+          updatedData.mediana.length,
+          updatedData.timestamp.length,
+          updatedData.ultimas_temperaturas.length
+        );
+
+        const synchronizedData = {
+          humedad: updatedData.humedad.slice(-minLength),
+          mediana: updatedData.mediana.slice(-minLength),
+          timestamp: updatedData.timestamp.slice(-minLength),
+          ultimas_temperaturas: updatedData.ultimas_temperaturas.slice(-minLength),
+        };
+
+        console.log('Synchronized data before setting state:', synchronizedData);
+        localStorage.setItem('data', JSON.stringify(synchronizedData));
+        setData(synchronizedData);
+        console.log('Updated data:', synchronizedData);
       })
       .catch(error => {
         setError(error.message);
@@ -43,6 +62,7 @@ const useFetchData = () => {
       ultimas_temperaturas: [],
     };
     setData(storedData);
+    console.log('Initial data from localStorage:', storedData);
     fetchData();
     const interval = setInterval(() => {
       fetchData();

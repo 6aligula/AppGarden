@@ -32,6 +32,7 @@ const TemperaturaChart = ({ data }) => {
       },
     },
   };
+  //console.log('Data in TemperaturaChart:', data);
 
   return <Line data={chartData} options={options} />;
 };
