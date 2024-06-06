@@ -22,7 +22,7 @@ const Home = () => {
         <div className="data-container">
           <div className="data-block">
             <h1>Humedad</h1>
-            {data.humedad > 0 ? <HumedadChart data={data} /> : <p>Cargando...</p>}
+            {data.humedad.length > 0 ? <HumedadChart data={data} /> : <p>Cargando...</p>}
           </div>
           <div className="data-block">
             <h1>Temperatura</h1>

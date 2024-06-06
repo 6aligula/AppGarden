@@ -1,21 +1,26 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import fetchDataFromApi from './fetchDataFromApi';
 
 const useFetchData = () => {
-  const [data, setData] = useState({ mediana: [], timestamp: [], ultimas_temperaturas: [] });
+  const [data, setData] = useState({ mediana: [], timestamp: [], ultimas_temperaturas: [], humedad: [] });
   const [error, setError] = useState(null);
 
   const fetchData = async () => {
     console.log('Fetching data...');
     try {
-      const response = await axios.get('/temperatura');
-      const newData = response.data;
-      console.log('New data from API:', newData);
+      const [newDataTemp, newDataHumedad] = await Promise.all([
+        fetchDataFromApi('/temperatura'),
+        fetchDataFromApi('/humedad')
+      ]);
+
+      console.log('New temperature data from API:', newDataTemp);
+      console.log('New humidity data from API:', newDataHumedad);
 
       const updatedData = {
-        mediana: newData.mediana,
-        timestamp: newData.timestamp,
-        ultimas_temperaturas: newData.ultimas_temperaturas,
+        mediana: newDataTemp.mediana,
+        timestamp: newDataTemp.timestamp,
+        ultimas_temperaturas: newDataTemp.ultimas_temperaturas,
+        humedad: newDataHumedad.map(item => ({ y: item.humedad, x: new Date(item.timestamp) })),
       };
 
       console.log('Updated data before setting state:', updatedData);
