@@ -10,7 +10,7 @@ const Home = () => {
   //console.log('Data in Home component:', data);
 
   return (
-    <div className="App">   
+    <div className="App">
       <header className="App-header">
         <h1>Jardinería</h1>
         <div className="button-container">
@@ -22,13 +22,13 @@ const Home = () => {
         <div className="data-container">
           <div className="data-block">
             <h1>Humedad</h1>
-            {data.humedad.length > 0 ? <HumedadChart data={data} /> : <p>Cargando...</p>}
+            {data.humedad > 0 ? <HumedadChart data={data} /> : <p>Cargando...</p>}
           </div>
           <div className="data-block">
             <h1>Temperatura</h1>
-            {data.ultimas_temperaturas.length > 0 ? (
+            {data.ultimas_temperaturas && data.ultimas_temperaturas.length > 0 ? (
               <div>
-                <p>Mediana: {data.mediana[data.mediana.length - 1]}°C</p>
+                <p>Mediana: {data.mediana}°C</p>
                 <TemperaturaChart data={data} />
               </div>
             ) : (
