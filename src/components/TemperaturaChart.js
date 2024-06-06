@@ -17,8 +17,8 @@ const TemperaturaChart = ({ data }) => {
         datasets: [
           {
             label: 'Temperatura',
-            data: formattedTimestamps.map((timestamp, index) => ({
-              x: timestamp,
+            data: data.timestamp.map((timestamp, index) => ({
+              x: new Date(timestamp), // Convertir timestamp directamente a Date
               y: data.ultimas_temperaturas[index],
             })),
             fill: false,
@@ -35,6 +35,7 @@ const TemperaturaChart = ({ data }) => {
       x: {
         type: 'time',
         time: {
+          parser: 'yyyy-MM-ddTHH:mm:ss.SSSZ', // Ajustar el formato del parser
           unit: 'second',
           displayFormats: {
             second: 'HH:mm:ss',
@@ -42,8 +43,11 @@ const TemperaturaChart = ({ data }) => {
           tooltipFormat: 'yyyy-MM-dd HH:mm:ss',
         },
         ticks: {
-          autoSkip: false,
-          //maxTicksLimit: 7, // Limitar a 7 ticks en el eje x
+          source: 'data', // Asegurar que las etiquetas provengan directamente de los datos
+          maxTicksLimit: 7, // Limitar a 7 etiquetas en el eje x
+          callback: function(value, index, values) {
+            return new Date(value).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+          },
         },
         title: {
           display: true,
