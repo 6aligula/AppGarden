@@ -1,36 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom'; 
+// HumedadTierraChart.js
+import React from 'react';
 import { Line } from 'react-chartjs-2';
+import { Link } from 'react-router-dom';
+import useFetchHumedadData from '../hooks/useFetchHumedadData';
+import {
+  Chart as ChartJS,
+  TimeScale,
+  LinearScale,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import 'chartjs-adapter-date-fns';
+import './css/HumedadTierraChart.css';
+
+ChartJS.register(TimeScale, LinearScale, LineElement, PointElement, Title, Tooltip, Legend);
 
 const HumedadTierraChart = () => {
-  const [data, setData] = useState({ timestamp: [], humedad: [] });
-
-  const fetchData = () => {
-    fetch('/humedad/tierra')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Error en la respuesta de la red');
-        }
-        return response.json();
-      })
-      .then(newData => {
-        setData({
-          timestamp: newData.map(entry => new Date(entry.timestamp)),
-          humedad: newData.map(entry => entry.humedad_tierra),
-        });
-      })
-      .catch(error => {
-        console.error('Error al obtener datos:', error);
-      });
-  };
-
-  useEffect(() => {
-    fetchData(); // Realiza la primera solicitud al cargar el componente
-
-    const intervalId = setInterval(fetchData, 5000); // Realiza una solicitud cada 5 segundos
-
-    return () => clearInterval(intervalId); // Limpia el intervalo al desmontar el componente
-  }, []);
+  const data = useFetchHumedadData('/humedad/tierra');
 
   const chartData = {
     labels: data.timestamp,
@@ -50,24 +39,54 @@ const HumedadTierraChart = () => {
       x: {
         type: 'time',
         time: {
-          unit: 'minute',
+          parser: 'yyyy-MM-ddTHH:mm:ss.SSSZ',
+          unit: 'second',
+          displayFormats: {
+            second: 'HH:mm:ss',
+          },
+          tooltipFormat: 'yyyy-MM-dd HH:mm:ss',
+        },
+        ticks: {
+          source: 'data',
+          autoSkip: false,
+          callback: function (value) {
+            const date = new Date(value);
+            return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+          },
+          maxRotation: 0,
+          minRotation: 0,
+          sampleSize: 7,
+        },
+        title: {
+          display: true,
+          text: 'Hora',
         },
       },
       y: {
         beginAtZero: true,
+        title: {
+          display: true,
+          text: 'Humedad (%)',
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top',
       },
     },
   };
 
   return (
-    <div style={{ backgroundColor: 'black', width: '100vw', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-      <div style={{ backgroundColor: 'black', padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <div style={{ flex: '1' }}></div>
-        <Link to="/" style={{ textDecoration: 'none' }}> {}
-          <button style={{ backgroundColor: 'white', color: 'black', padding: '5px 10px', border: 'none', borderRadius: '5px', marginBottom: '10px' }}>Home</button>
+    <div className="container">
+      <div className="inner-container">
+        <div className="flex-1"></div>
+        <Link to="/" style={{ textDecoration: 'none' }}>
+          <button className="home-button">Home</button>
         </Link>
-        <h2 style={{ color: 'white', fontSize: '1.5rem', marginBottom: '10px' }}>Humedad Tierra</h2>
-        <div style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px' }}>
+        <h2 className="title">Humedad Tierra</h2>
+        <div className="chart-container">
           <Line data={chartData} options={options} />
         </div>
       </div>
