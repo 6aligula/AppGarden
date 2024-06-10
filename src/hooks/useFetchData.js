@@ -6,15 +6,15 @@ const useFetchData = () => {
   const [error, setError] = useState(null);
 
   const fetchData = async () => {
-    console.log('Fetching data...');
+    //console.log('Fetching data...');
     try {
       const [newDataTemp, newDataHumedad] = await Promise.all([
         fetchDataFromApi('/temperatura'),
         fetchDataFromApi('/humedad')
       ]);
 
-      console.log('New temperature data from API:', newDataTemp);
-      console.log('New humidity data from API:', newDataHumedad);
+      //console.log('New temperature data from API:', newDataTemp);
+      //console.log('New humidity data from API:', newDataHumedad);
 
       const updatedData = {
         mediana: newDataTemp.mediana,
@@ -23,9 +23,9 @@ const useFetchData = () => {
         humedad: newDataHumedad.map(item => ({ y: item.humedad, x: new Date(item.timestamp) })),
       };
 
-      console.log('Updated data before setting state:', updatedData);
+      //console.log('Updated data before setting state:', updatedData);
       setData(updatedData);
-      console.log('Updated data:', updatedData);
+      //console.log('Updated data:', updatedData);
     } catch (error) {
       setError(error.message);
     }
