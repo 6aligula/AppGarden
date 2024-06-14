@@ -1,0 +1,5 @@
+curl -X GET "http://192.168.140.170:5000/motor/estado"
+
+curl -X POST "http://192.168.140.170:5000/motor/encender?seconds=10"
+
+curl -X POST "http://192.168.140.170:5000/motor/apagar"

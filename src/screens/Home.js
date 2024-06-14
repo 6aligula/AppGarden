@@ -15,8 +15,7 @@ const Home = () => {
         <h1>Jardinería</h1>
         <div className="button-container">
           <button onClick={() => navigate('/humedadtierra')}>Humedad Tierra</button>
-          <button onClick={() => alert('Botón 3 presionado')}>Botón 3</button>
-          <button onClick={() => alert('Botón 4 presionado')}>Botón 4</button>
+          <button onClick={() => navigate('/motorScreen')}>Motor Control</button>
         </div>
         <div className="data-container">
           <div className="data-block">
