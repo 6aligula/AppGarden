@@ -1,25 +1,36 @@
-// EstadoMotor.js
-
 import React, { useState, useEffect } from 'react';
-import { getEstadoMotor } from '../hooks/api';
 
 const EstadoMotor = () => {
     const [estado, setEstado] = useState(null);
 
-    const fetchEstado = async () => {
-        const result = await getEstadoMotor();
-        setEstado(result);
-    };
-
     useEffect(() => {
-        fetchEstado();
+        console.log('Estableciendo conexión con EventSource...');
+        const eventSource = new EventSource('http://192.168.140.170:5000/motor/events');
+
+        eventSource.onopen = () => {
+            console.log('Conexión SSE abierta.');
+        };
+
+        eventSource.onmessage = (event) => {
+            console.log('Mensaje recibido del servidor:', event.data);
+            setEstado(event.data);
+        };
+
+        eventSource.onerror = (error) => {
+            console.error('Error en la conexión SSE:', error);
+            eventSource.close();
+        };
+
+        return () => {
+            console.log('Cerrando conexión SSE.');
+            eventSource.close();
+        };
     }, []);
 
     return (
         <div>
             <h2>Estado del Motor</h2>
-            <button onClick={fetchEstado}>Actualizar Estado</button>
-            {estado && <p>{estado.state || estado.error}</p>}
+            {estado && <p>{estado}</p>}
         </div>
     );
 };
