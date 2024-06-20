@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 const EstadoMotor = () => {
     const [estado, setEstado] = useState(null);
 
+
     useEffect(() => {
         console.log('Estableciendo conexión con EventSource...');
         const eventSource = new EventSource('http://192.168.140.170:5000/motor/events');

@@ -5,12 +5,24 @@ import { apagarMotor } from '../hooks/api';
 import { handleChange } from './utils';
 
 const ApagarMotor = () => {
-    const [seconds, setSeconds] = useState(0);
+    const [seconds, setSeconds] = useState(1);
     const [response, setResponse] = useState(null);
+    const [error, setError] = useState(null);
 
     const handleApagar = async () => {
-        const result = await apagarMotor(seconds);
-        setResponse(result);
+        try {
+            const result = await apagarMotor(seconds);
+            if (result.success) {
+                setResponse({ message: 'Petición cerrar enviada al backend correctamente' });
+                setError(null);
+            } else {
+                setResponse(null);
+                setError({ message: 'Error en la petición al backend' });
+            }
+        } catch (error) {
+            setResponse(null);
+            setError({ message: 'Error de conexión con el backend' });
+        }
     };
 
     return (
@@ -26,7 +38,8 @@ const ApagarMotor = () => {
                 max="120"
             />
             <button onClick={handleApagar}>Cerrar</button>
-            {response && <p>{response.message}</p>}
+            {response && <p style={{color: 'green'}}>{response.message}</p>}
+            {error && <p style={{ color: 'red' }}>{error.message}</p>}
         </div>
     );
 };

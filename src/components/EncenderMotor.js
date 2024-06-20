@@ -5,10 +5,22 @@ import { handleChange } from './utils';
 const EncenderMotor = () => {
     const [seconds, setSeconds] = useState(1);
     const [response, setResponse] = useState(null);
+    const [error, setError] = useState(null);
 
     const handleEncender = async () => {
-        const result = await encenderMotor(seconds);
-        setResponse(result);
+        try {
+            const result = await encenderMotor(seconds);
+            if (result.success) {
+                setResponse({ message: 'Petición abrir enviada al backend correctamente' });
+                setError(null);
+            } else {
+                setResponse(null);
+                setError({ message: 'Error en la petición al backend' });
+            }
+        } catch (error) {
+            setResponse(null);
+            setError({ message: 'Error de conexión con el backend' });
+        }
     };
 
     return (
@@ -24,7 +36,8 @@ const EncenderMotor = () => {
                 max="120"
             />
             <button onClick={handleEncender}>Abrir</button>
-            {response && <p>{response.message}</p>}
+            {response && <p style={{color: 'green'}}>{response.message}</p>}
+            {error && <p style={{ color: 'red' }}>{error.message}</p>}
         </div>
     );
 };
