@@ -5,7 +5,7 @@ const useFetchHumedadData = (url, interval = 5000) => {
   const [data, setData] = useState({ timestamp: [], humedad: [] });
 
   const fetchData = useCallback(() => {
-    fetch(url)
+    fetch(`${process.env.REACT_APP_API_URL}/${url}`)
       .then(response => {
         if (!response.ok) {
           throw new Error('Error en la respuesta de la red');
