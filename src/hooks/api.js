@@ -16,3 +16,17 @@ export const getEstadoMotor = async () => {
     const response = await axios.get(`${process.env.REACT_APP_API_URL}/motor/estado`);
     return response.data;
 };
+
+export const sendConfigGarden = async ( umbralAlto, umbralBajo, segundos) => {
+    const response = await axios.post(`${process.env.REACT_APP_API_URL}/motor/autocontrol`, {
+        umbral_alto: umbralAlto,
+        umbral_bajo: umbralBajo,
+        segundos: segundos,
+    });
+    return response.data;
+};
+
+export const getConfigGarden = async () => {
+    const response = await axios.get(`${process.env.REACT_APP_API_URL}/motor/get_config`);
+    return response.data;
+};
