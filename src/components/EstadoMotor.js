@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import MotorAnimation from './MotorAnimation';
 
 const EstadoMotor = () => {
     const [estado, setEstado] = useState(null);
@@ -9,23 +10,30 @@ const EstadoMotor = () => {
     const eventSourceRef = useRef(null);
 
     const connect = () => {
-        console.log('Estableciendo conexión con EventSource...');
+        //console.log('Estableciendo conexión con EventSource...');
         const eventSource = new EventSource(`${process.env.REACT_APP_API_URL}/motor/events`);
 
         eventSource.onopen = () => {
-            console.log('Conexión SSE abierta.');
+            //console.log('Conexión SSE abierta.');
             setIsConnected(true);
             setError(null);  // Reset error state on successful connection
             reconnectAttempts.current = 0;  // Reset reconnect attempts on successful connection
         };
 
         eventSource.onmessage = (event) => {
-            console.log('Mensaje recibido del servidor:', event.data);
-            setEstado(event.data);
+            //console.log('Mensaje recibido del servidor:', event.data);
+            try {
+                const parsedData = JSON.parse(event.data);
+                //console.log('Parsed data:', parsedData);
+                setEstado(parsedData);
+            } catch (e) {
+                //console.error('Error parsing JSON:', e);
+                setError('Error parsing data from server');
+            }
         };
 
         eventSource.onerror = () => {
-            console.error('Error en la conexión SSE. Intentando reconectar...');
+            //console.error('Error en la conexión SSE. Intentando reconectar...');
             setIsConnected(false);
             eventSource.close();
 
@@ -48,7 +56,7 @@ const EstadoMotor = () => {
 
         return () => {
             if (eventSourceRef.current) {
-                console.log('Cerrando conexión SSE.');
+                //console.log('Cerrando conexión SSE.');
                 eventSourceRef.current.close();
             }
         };
@@ -57,7 +65,12 @@ const EstadoMotor = () => {
     return (
         <div>
             <h2>Estado del Motor</h2>
-            {estado && <p>Estado actual: {estado}</p>}
+            {estado && (
+                <div>
+                    <p>Estado actual: {`Estado: ${estado.state}, Duración: ${estado.duration} segundos`}</p>
+                    <MotorAnimation state={estado.state} duration={estado.duration} />
+                </div>
+            )}
             {error && <p style={{ color: 'red' }}>{error}</p>}
             {!isConnected && !error && <p style={{ color: 'orange' }}>Conectando...</p>}
         </div>
