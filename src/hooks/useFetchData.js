@@ -9,8 +9,8 @@ const useFetchData = () => {
     //console.log('Fetching data...');
     try {
       const [newDataTemp, newDataHumedad] = await Promise.all([
-        fetchDataFromApi('/temperatura'),
-        fetchDataFromApi('/humedad')
+        fetchDataFromApi('temperatura'),
+        fetchDataFromApi('humedad')
       ]);
 
       //console.log('New temperature data from API:', newDataTemp);

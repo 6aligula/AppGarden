@@ -30,3 +30,8 @@ export const getConfigGarden = async () => {
     const response = await axios.get(`${process.env.REACT_APP_API_URL}/motor/get_config`);
     return response.data;
 };
+
+export const getMotorEvents = async () => {
+    const response = await axios.get(`${process.env.REACT_APP_API_URL}/motor/events`);
+    return response.data;
+};
